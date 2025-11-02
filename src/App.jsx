@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import anime from 'animejs/lib/anime.es.js';
 
 const styles = {
   container: {
@@ -154,6 +154,7 @@ const styles = {
 };
 
 const App = () => {
+  // === STATE ===
   const [tableSize, setTableSize] = useState(10);
   const [hashingMethod, setHashingMethod] = useState('closed');
   const [probingMethod, setProbingMethod] = useState('linear');
@@ -165,11 +166,13 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [isOperating, setIsOperating] = useState(false);
 
+  // === REFS ===
   const operationRef = useRef(false);
   const tableRef = useRef(null);
   const messageRef = useRef(null);
   const probeRef = useRef(null);
 
+  // === EFFECTS ===
   useEffect(() => () => { operationRef.current = false; }, []);
   useEffect(() => { initializeTable(); }, [tableSize, hashingMethod]);
   useEffect(() => {
@@ -195,6 +198,7 @@ const App = () => {
     }
   }, [probeSequence]);
 
+  // === SUPPORT ===
   const initializeTable = () => {
     operationRef.current = false;
     setIsOperating(false);
@@ -238,6 +242,7 @@ const App = () => {
   };
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // === ANIMATION FNS ===
   const animateBucket = (index) => {
     const element = document.querySelector(`[data-bucket="${index}"]`);
     if (!element) return;
@@ -270,6 +275,8 @@ const App = () => {
     }
   };
 
+  // === HASHING LOGIC ===
+  // --- Closed Hashing ---
   const insertClosed = async (value) => {
     const key = parseInt(value);
     if (isNaN(key)) { setMessage('Please enter a valid number'); return; }
@@ -339,6 +346,7 @@ const App = () => {
     } finally { setIsOperating(false); operationRef.current = false; }
   };
 
+  // --- Open Addressing (insert, search, delete all show probe trails) ---
   const insertOpen = async (value) => {
     const key = parseInt(value); if (isNaN(key)) { setMessage('Please enter a valid number'); return; }
     operationRef.current = true; setIsOperating(true); setProbeSequence([]); setProbeCalcs([]);
@@ -429,6 +437,7 @@ const App = () => {
     } finally { setIsOperating(false); operationRef.current = false; }
   };
 
+  // === UI HANDLERS ===
   const handleInsert = () => {
     if (isOperating || !inputValue) return;
     if (hashingMethod === 'closed') insertClosed(inputValue);
@@ -445,12 +454,6 @@ const App = () => {
     if (hashingMethod === 'closed') deleteClosed(inputValue);
     else deleteOpen(inputValue);
     setInputValue('');
-  };
-  const handleTableSizeChange = (e) => {
-    let val = parseInt(e.target.value) || 5;
-    if (val < 5) val = 5;
-    if (val > 20) val = 20;
-    setTableSize(val);
   };
   const getSlotStyle = (slot, index) => {
     let baseStyle = { ...styles.slot };
@@ -473,13 +476,14 @@ const App = () => {
     else return table[0] && typeof table[0] === 'object' && 'status' in table[0];
   };
 
+  // === RENDER ===
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>⚡ HASHING VISUALIZER ⚡</h1>
       <div style={styles.controls}>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Table Size:</label>
-          <input style={styles.input} type="number" value={tableSize} onChange={handleTableSizeChange} min="5" max="20" disabled={isOperating}/>
+          <input style={styles.input} type="number" value={tableSize} onChange={(e) => setTableSize(Math.max(5, Math.min(20, parseInt(e.target.value) || 10)))} min="5" max="20" disabled={isOperating}/>
         </div>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Hashing Method:</label>
