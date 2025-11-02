@@ -165,13 +165,13 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [isOperating, setIsOperating] = useState(false);
 
-  // === REFS ===
+ 
   const operationRef = useRef(false);
   const tableRef = useRef(null);
   const messageRef = useRef(null);
   const probeRef = useRef(null);
 
-  // === EFFECTS ===
+ 
   useEffect(() => () => { operationRef.current = false; }, []);
   useEffect(() => { initializeTable(); }, [tableSize, hashingMethod]);
   useEffect(() => {
@@ -197,7 +197,7 @@ const App = () => {
     }
   }, [probeSequence]);
 
-  // === SUPPORT ===
+
   const initializeTable = () => {
     operationRef.current = false;
     setIsOperating(false);
@@ -241,7 +241,7 @@ const App = () => {
   };
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // === ANIMATION FNS ===
+
   const animateBucket = (index) => {
     const element = document.querySelector(`[data-bucket="${index}"]`);
     if (!element) return;
@@ -274,8 +274,7 @@ const App = () => {
     }
   };
 
-  // === HASHING LOGIC ===
-  // --- Closed Hashing ---
+  // HASHING CLSED 
   const insertClosed = async (value) => {
     const key = parseInt(value);
     if (isNaN(key)) { setMessage('Please enter a valid number'); return; }
@@ -345,7 +344,7 @@ const App = () => {
     } finally { setIsOperating(false); operationRef.current = false; }
   };
 
-  // --- Open Addressing (insert, search, delete all show probe trails) ---
+  // HAsh open 
   const insertOpen = async (value) => {
     const key = parseInt(value); if (isNaN(key)) { setMessage('Please enter a valid number'); return; }
     operationRef.current = true; setIsOperating(true); setProbeSequence([]); setProbeCalcs([]);
@@ -436,7 +435,7 @@ const App = () => {
     } finally { setIsOperating(false); operationRef.current = false; }
   };
 
-  // === UI HANDLERS ===
+  
   const handleInsert = () => {
     if (isOperating || !inputValue) return;
     if (hashingMethod === 'closed') insertClosed(inputValue);
@@ -475,7 +474,7 @@ const App = () => {
     else return table[0] && typeof table[0] === 'object' && 'status' in table[0];
   };
 
-  // === RENDER ===
+  
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>⚡ HASHING VISUALIZER ⚡</h1>
