@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 
 
 const styles = {
-  container: {
-    maxWidth: '1400px', margin: '0 auto', padding: '24px',
-    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-    background: 'linear-gradient(120deg, #101010 10%, #232323 100%)',
-    minHeight: '100vh',
-  },
+ container: {
+  maxWidth: '1400px', margin: '0 auto', padding: '24px',
+  fontFamily: 'Inter, Segoe UI, Nunito, Roboto, Helvetica Neue, Arial, sans-serif',
+  background: 'linear-gradient(120deg, #101010 10%, #232323 100%)',
+  minHeight: '100vh',
+},
   title: {
     textAlign: 'center', color: '#fde047', marginBottom: '34px', fontSize: '2.8em',
     textShadow: '0 4px 24px #fde04799, 0 2px 8px #fff3', fontWeight: 700, letterSpacing: '2px',
