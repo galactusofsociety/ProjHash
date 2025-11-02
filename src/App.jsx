@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import anime from 'animejs/lib/anime.es.js';
 
 const styles = {
   container: {
@@ -154,7 +153,6 @@ const styles = {
 };
 
 const App = () => {
-  // === STATE ===
   const [tableSize, setTableSize] = useState(10);
   const [hashingMethod, setHashingMethod] = useState('closed');
   const [probingMethod, setProbingMethod] = useState('linear');
@@ -166,13 +164,11 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [isOperating, setIsOperating] = useState(false);
 
-  // === REFS ===
   const operationRef = useRef(false);
   const tableRef = useRef(null);
   const messageRef = useRef(null);
   const probeRef = useRef(null);
 
-  // === EFFECTS ===
   useEffect(() => () => { operationRef.current = false; }, []);
   useEffect(() => { initializeTable(); }, [tableSize, hashingMethod]);
   useEffect(() => {
@@ -198,7 +194,6 @@ const App = () => {
     }
   }, [probeSequence]);
 
-  // === SUPPORT ===
   const initializeTable = () => {
     operationRef.current = false;
     setIsOperating(false);
@@ -242,7 +237,6 @@ const App = () => {
   };
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // === ANIMATION FNS ===
   const animateBucket = (index) => {
     const element = document.querySelector(`[data-bucket="${index}"]`);
     if (!element) return;
@@ -275,8 +269,6 @@ const App = () => {
     }
   };
 
-  // === HASHING LOGIC ===
-  // --- Closed Hashing ---
   const insertClosed = async (value) => {
     const key = parseInt(value);
     if (isNaN(key)) { setMessage('Please enter a valid number'); return; }
@@ -346,7 +338,6 @@ const App = () => {
     } finally { setIsOperating(false); operationRef.current = false; }
   };
 
-  // --- Open Addressing (insert, search, delete all show probe trails) ---
   const insertOpen = async (value) => {
     const key = parseInt(value); if (isNaN(key)) { setMessage('Please enter a valid number'); return; }
     operationRef.current = true; setIsOperating(true); setProbeSequence([]); setProbeCalcs([]);
@@ -361,7 +352,7 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status === 'empty' || table[index].status === 'deleted') {
+        if (table[index].status !== 'occupied') {
           const newTable = [...table];
           newTable[index] = { value: key, status: 'occupied' };
           setTable(newTable); inserted = true;
@@ -389,7 +380,7 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status === 'empty') {
+        if (table[index].status === 'empty' || table[index].status === 'deleted') {
           setMessage(`${key} not found (empty slot reached)`); break;
         }
         if (table[index].value === key && table[index].status === 'occupied') {
@@ -418,14 +409,14 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status === 'empty') {
+        if (table[index].status === 'empty' || table[index].status === 'deleted') {
           setMessage(`${key} not found (empty slot reached)`); break;
         }
         if (table[index].value === key && table[index].status === 'occupied') {
           animateSlotValue(index, 'delete');
           await sleep(400); if (!operationRef.current) return;
           const newTable = [...table];
-          newTable[index] = { value: null, status: 'deleted' };
+          newTable[index] = { value: null, status: 'empty' };
           setTable(newTable); deleted = true;
           setMessage(`Deleted ${key} from index ${index} after ${i + 1} probe(s)`); break;
         }
@@ -437,7 +428,6 @@ const App = () => {
     } finally { setIsOperating(false); operationRef.current = false; }
   };
 
-  // === UI HANDLERS ===
   const handleInsert = () => {
     if (isOperating || !inputValue) return;
     if (hashingMethod === 'closed') insertClosed(inputValue);
@@ -476,7 +466,6 @@ const App = () => {
     else return table[0] && typeof table[0] === 'object' && 'status' in table[0];
   };
 
-  // === RENDER ===
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>⚡ HASHING VISUALIZER ⚡</h1>
