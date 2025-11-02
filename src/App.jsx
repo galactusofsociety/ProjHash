@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+
 const styles = {
   container: {
     maxWidth: '1400px', margin: '0 auto', padding: '24px',
@@ -380,7 +381,7 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status === 'empty' || table[index].status === 'deleted') {
+        if (table[index].status !== 'occupied') {
           setMessage(`${key} not found (empty slot reached)`); break;
         }
         if (table[index].value === key && table[index].status === 'occupied') {
@@ -409,7 +410,7 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status === 'empty' || table[index].status === 'deleted') {
+        if (table[index].status !== 'occupied') {
           setMessage(`${key} not found (empty slot reached)`); break;
         }
         if (table[index].value === key && table[index].status === 'occupied') {
