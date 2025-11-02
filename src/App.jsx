@@ -481,7 +481,7 @@ const App = () => {
       <div style={styles.controls}>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Table Size:</label>
-          <input style={styles.input} type="number" value={tableSize} onChange={(e) => setTableSize(Math.max(5, Math.min(20, parseInt(e.target.value) || 10)))} min="5" max="20" disabled={isOperating}/>
+          <input style={styles.input} type="number" value={tableSize} onChange={(e) => setTableSize(e.target.value)} min="5" max="20" disabled={isOperating}/>
         </div>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Hashing Method:</label>
