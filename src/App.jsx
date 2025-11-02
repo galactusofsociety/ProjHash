@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import anime from 'animejs/lib/anime.es.js';
 
 const styles = {
   container: {
@@ -381,7 +381,7 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status !== 'occupied') {
+        if (table[index].status === 'empty') {
           setMessage(`${key} not found (empty slot reached)`); break;
         }
         if (table[index].value === key && table[index].status === 'occupied') {
@@ -410,14 +410,14 @@ const App = () => {
         setAnimatingIndex(index); animateSlot(index);
         if (sequence.length > 1) animateProbeIndicator(index, i);
         await sleep(600); if (!operationRef.current) return;
-        if (table[index].status !== 'occupied') {
+        if (table[index].status === 'empty') {
           setMessage(`${key} not found (empty slot reached)`); break;
         }
         if (table[index].value === key && table[index].status === 'occupied') {
           animateSlotValue(index, 'delete');
           await sleep(400); if (!operationRef.current) return;
           const newTable = [...table];
-          newTable[index] = { value: null, status: 'empty' };
+          newTable[index] = { value: null, status: 'deleted' };
           setTable(newTable); deleted = true;
           setMessage(`Deleted ${key} from index ${index} after ${i + 1} probe(s)`); break;
         }
