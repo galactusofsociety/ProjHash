@@ -3,155 +3,322 @@ import React, { useState, useEffect, useRef } from 'react';
 
 
 const styles = {
- container: {
-  maxWidth: '1400px', margin: '0 auto', padding: '24px',
-  fontFamily: 'Inter, Segoe UI, Nunito, Roboto, Helvetica Neue, Arial, sans-serif',
-  background: 'linear-gradient(120deg, #101010 10%, #232323 100%)',
-  minHeight: '100vh',
-},
-  title: {
-    textAlign: 'center', color: '#fde047', marginBottom: '34px', fontSize: '2.8em',
-    textShadow: '0 4px 24px #fde04799, 0 2px 8px #fff3', fontWeight: 700, letterSpacing: '2px',
-  },
-  controls: {
-    background: 'rgba(18, 18, 18, 0.95)', padding: '28px', borderRadius: '18px',
-    boxShadow: '0 12px 36px rgba(219, 218, 218, 0.7), 0 0 24px #fde04722', marginBottom: '28px',
-    border: '1.5px solid #fde047', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '18px'
-  },
-  controlGroup: {
-    display: 'inline-block', marginBottom: '14px', verticalAlign: 'top', minWidth: '185px',
-  },
-  label: {
-    display: 'block', fontWeight: 700, marginBottom: '8px', color: '#fde047',
-    fontSize: '15px', textTransform: 'uppercase', letterSpacing: '1px',
-  },
-  input: {
-    padding: '10px 16px', border: '2px solid #fde04788', borderRadius: '8px',
-    fontSize: '15px', background: '#1a1a1a', color: '#fff',
-    minWidth: '155px', transition: 'all 0.3s', outline: 'none',
-  },
-  buttonGroup: {
-    display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '17px', justifyContent: 'center',
-  },
-  btnBase: {
-    padding: '13px 26px', border: '2px solid', borderRadius: '8px', fontSize: '15px',
-    fontWeight: 700, cursor: 'pointer', transition: 'all 0.24s', textTransform: 'uppercase', letterSpacing: '1px',
-    boxShadow: '0 0 12px #fde04733', color: '#222', background: '#fff', fontFamily: 'inherit',
-  },
-  btnDisabled: {
-    opacity: 0.5, cursor: 'not-allowed',
-  },
-  btnInsert: {
-    background: '#fde047', color: '#222', borderColor: '#fde047', boxShadow: '0 0 15px #fde04760',
-  },
-  btnSearch: {
-    background: '#fff', color: '#ffc800', borderColor: '#ffc800', boxShadow: '0 0 12px #ffc80022',
-  },
-  btnDelete: {
-    background: '#fff', color: '#222', borderColor: '#222', boxShadow: '0 0 11px #22222222',
-  },
-  btnClear: {
-    background: '#fffde4', color: '#bb8500', borderColor: '#fde047', boxShadow: '0 0 10px #fde04755',
-  },
-  message: {
-    background: 'rgba(34, 34, 34, 0.95)', padding: '17px 22px', borderRadius: '12px', marginBottom: '24px',
-    fontWeight: 550, color: '#fde047', textShadow: '0 0 11px #fde0475a',
-    boxShadow: '0 3px 28px #11111160, 0 0 8px #fde04722', border: '2px solid #fde047cc',
-    opacity: 0, transform: 'translateY(-10px)',
-  },
-  hashInfo: {
-    background: 'rgba(12, 12, 12, 0.95)', padding: '18px 26px', borderRadius: '12px', marginBottom: '28px',
-    boxShadow: '0 2px 14px #0a0a0a98', border: '1.5px solid #fde047d0',
-  },
-  hashInfoText: {
-    margin: '9px 0', color: '#fff', fontSize: '15px', textShadow: '0 0 4px #fde04722',
-  },
-  probeCalcs: {
-    background: 'rgba(34, 34, 34, 0.92)', border: '2px solid #fde047cc', borderRadius: '12px',
-    boxShadow: '0 3px 18px #11111150, 0 0 8px #fde04711', padding: '16px 24px', margin: '18px auto 18px auto',
-    fontSize: '15px', color: '#fff', maxWidth: '800px',
-  },
-  probeCalcStep: {
-    color: '#fde047', marginBottom: '6px', fontWeight: 600, fontSize: '15px',
-    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-  },
-  tableWrapper: {
-    background: 'rgba(18, 18, 18, 0.97)', padding: '36px', borderRadius: '17px',
-    boxShadow: '0 10px 50px #07070788', overflowX: 'auto', border: '2px solid #fde04788', marginBottom: '0px'
-  },
-  closedTable: {
-    display: 'flex', flexDirection: 'column', gap: '18px',
-  },
-  bucket: {
-    display: 'flex', alignItems: 'center', background: '#222', border: '2px solid #fffde4',
-    borderRadius: '11px', padding: '18px', minHeight: '70px', transition: 'all 0.2s',
-  },
-  bucketAnimating: {
-    borderColor: '#fde047', background: 'rgba(254, 224, 71, 0.18)', boxShadow: '0 0 20px #fde04788',
-  },
-  bucketProbing: {
-    borderColor: '#fff', background: 'rgba(255,255,255,0.13)',
-  },
-  bucketIndex: {
-    fontWeight: 700, fontSize: '18px', color: '#fde047', minWidth: '50px', textAlign: 'center',
-    background: 'rgba(254, 224, 71, 0.12)', borderRadius: '9px', padding: '10px', marginRight: '22px',
-    border: '2px solid #fde04744', boxShadow: '0 0 10px #fde04744',
-  },
-  bucketChain: {
-    display: 'flex', alignItems: 'center', gap: '11px', flexWrap: 'wrap', flex: 1,
-  },
-  chainNode: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-  },
-  emptyNode: {
-    color: '#fffde4', fontStyle: 'italic', fontSize: '15px',
-  },
-  nodeValue: {
-    background: 'rgba(254, 224, 71, 0.16)', color: '#fde047', padding: '11px 19px',
-    borderRadius: '11px', fontWeight: 700, fontSize: '16px', boxShadow: '0 0 10px #fde04744',
-    border: '2px solid #fde04733', opacity: 1, transform: 'translateX(0) scale(1)',
-  },
-  nodeArrow: {
-    color: '#fff', fontSize: '23px', fontWeight: 'bold', textShadow: '0 0 6px #fff5',
-  },
-  openTable: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))', gap: '19px',
-  },
-  slot: {
-    background: '#232323', border: '3px solid #fde04755', borderRadius: '12px', padding: '24px',
-    textAlign: 'center', transition: 'all 0.2s', position: 'relative', minHeight: '120px',
-    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-  },
-  slotOccupied: {
-    borderColor: '#fde047', background: 'rgba(254, 224, 71, 0.24)', boxShadow: '0 0 18px #fde04755',
-  },
-  slotAnimating: {
-    borderColor: '#fff', background: 'rgba(255,255,255,0.07)', boxShadow: '0 0 16px #fffde4',
-  },
-  slotProbing: {
-    borderColor: '#fffde4', background: 'rgba(255,245,199,0.11)',
-  },
-  slotIndex: {
-    fontWeight: 700, fontSize: '16px', color: '#fde047', background: 'rgba(254, 224, 71, 0.16)',
-    borderRadius: '7px', padding: '6px 14px', marginBottom: '14px', border: '2px solid #fde04728',
-  },
-  slotValue: {
-    fontSize: '24px', fontWeight: 700, color: '#fff', textShadow: '0 0 4px #fde04755',
-  },
-  slotValueEmpty: {
-    color: '#fde04733', fontSize: '30px',
-  },
-  probeIndicator: {
-    position: 'absolute', top: '-12px', right: '-12px', background: '#fde047', color: '#232323',
-    width: '30px', height: '30px', borderRadius: '50%', display: 'flex', alignItems: 'center',
-    justifyContent: 'center', fontSize: '14px', fontWeight: 700, boxShadow: '0 0 12px #fde04790',
-    border: '2px solid #fffde4', opacity: 0, scale: 0,
-  },
-  probeSequence: {
-    background: 'rgba(254, 224, 71, 0.13)', color: '#fde047', border: '2px solid #fffde4',
-    boxShadow: '0 0 24px #fde04733, 0 0 10px #fffde422', padding: '17px 22px', borderRadius: '12px',
-    marginTop: '22px', textAlign: 'center', fontSize: '18px', opacity: 0, transform: 'translateY(10px)',
-  },
+  container: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '24px',
+    fontFamily: 'Inter, Segoe UI, Nunito, Roboto, Helvetica Neue, Arial, sans-serif',
+    background: 'linear-gradient(120deg, #fff 10%, #f9c2ff 70%, #ff9d6b 100%)',
+    minHeight: '100vh',
+  },
+  title: {
+    textAlign: 'center',
+    color: '#ff9d6b',
+    marginBottom: '34px',
+    fontSize: '2.8em',
+    textShadow: '0 4px 24px #ff9d6b99, 0 2px 8px #fff3',
+    fontWeight: 700,
+    letterSpacing: '2px',
+  },
+  controls: {
+    background: 'rgba(255, 255, 255, 0.95)',
+    padding: '28px',
+    borderRadius: '18px',
+    boxShadow: '0 12px 36px rgba(249,194,255,0.3), 0 0 24px #ff9d6b22',
+    marginBottom: '28px',
+    border: '1.5px solid #f9c2ff',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '18px'
+  },
+  controlGroup: {
+    display: 'inline-block',
+    marginBottom: '14px',
+    verticalAlign: 'top',
+    minWidth: '185px',
+  },
+  label: {
+    display: 'block',
+    fontWeight: 700,
+    marginBottom: '8px',
+    color: '#ff9d6b',
+    fontSize: '15px',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+  },
+  input: {
+    padding: '10px 16px',
+    border: '2px solid #f9c2ff88',
+    borderRadius: '8px',
+    fontSize: '15px',
+    background: '#fff5f8',
+    color: '#ff1493',
+    minWidth: '155px',
+    transition: 'all 0.3s',
+    outline: 'none',
+  },
+  buttonGroup: {
+    display: 'flex',
+    gap: '12px',
+    flexWrap: 'wrap',
+    marginTop: '17px',
+    justifyContent: 'center',
+  },
+  btnBase: {
+    padding: '13px 26px',
+    border: '2px solid',
+    borderRadius: '8px',
+    fontSize: '15px',
+    fontWeight: 700,
+    cursor: 'pointer',
+    transition: 'all 0.24s',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    boxShadow: '0 0 12px #f9c2ff33',
+    color: '#fff',
+    background: '#ff1493',
+    fontFamily: 'inherit',
+  },
+  btnDisabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+  btnInsert: {
+    background: '#ff9d6b',
+    color: '#fff',
+    borderColor: '#ff9d6b',
+    boxShadow: '0 0 15px #ff9d6b60',
+  },
+  btnSearch: {
+    background: '#fff',
+    color: '#f9c2ff',
+    borderColor: '#f9c2ff',
+    boxShadow: '0 0 12px #f9c2ff22',
+  },
+  btnDelete: {
+    background: '#fff',
+    color: '#ff1493',
+    borderColor: '#ff1493',
+    boxShadow: '0 0 11px #ff149311',
+  },
+  btnClear: {
+    background: '#fff7f2',
+    color: '#ff9d6b',
+    borderColor: '#ff9d6b',
+    boxShadow: '0 0 10px #ff9d6b55',
+  },
+  message: {
+    background: 'rgba(255, 255, 255, 0.95)',
+    padding: '17px 22px',
+    borderRadius: '12px',
+    marginBottom: '24px',
+    fontWeight: 550,
+    color: '#ff9d6b',
+    textShadow: '0 0 11px #ff9d6b5a',
+    boxShadow: '0 3px 28px #f9c2ff60, 0 0 8px #ff9d6b22',
+    border: '2px solid #f9c2ffd0',
+    opacity: 0,
+    transform: 'translateY(-10px)',
+  },
+  hashInfo: {
+    background: 'rgba(255, 234, 244, 0.95)',
+    padding: '18px 26px',
+    borderRadius: '12px',
+    marginBottom: '28px',
+    boxShadow: '0 2px 14px #f9c2ff98',
+    border: '1.5px solid #ff9d6bd0',
+  },
+  hashInfoText: {
+    margin: '9px 0',
+    color: '#ff1493',
+    fontSize: '15px',
+    textShadow: '0 0 4px #ff9d6b22',
+  },
+  probeCalcs: {
+    background: 'rgba(255, 255, 255, 0.92)',
+    border: '2px solid #ff9d6bcc',
+    borderRadius: '12px',
+    boxShadow: '0 3px 18px #f9c2ff50, 0 0 8px #ff9d6b11',
+    padding: '16px 24px',
+    margin: '18px auto 18px auto',
+    fontSize: '15px',
+    color: '#ff1493',
+    maxWidth: '800px',
+  },
+  probeCalcStep: {
+    color: '#ff9d6b',
+    marginBottom: '6px',
+    fontWeight: 600,
+    fontSize: '15px',
+    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+  },
+  tableWrapper: {
+    background: 'rgba(255, 255, 255, 0.97)',
+    padding: '36px',
+    borderRadius: '17px',
+    boxShadow: '0 10px 50px #f9c2ff88',
+    overflowX: 'auto',
+    border: '2px solid #ff9d6b88',
+    marginBottom: '0px'
+  },
+  closedTable: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '18px',
+  },
+  bucket: {
+    display: 'flex',
+    alignItems: 'center',
+    background: '#ffeaf4',
+    border: '2px solid #fff7f2',
+    borderRadius: '11px',
+    padding: '18px',
+    minHeight: '70px',
+    transition: 'all 0.2s',
+  },
+  bucketAnimating: {
+    borderColor: '#ff9d6b',
+    background: 'rgba(255, 157, 107, 0.18)',
+    boxShadow: '0 0 20px #ff9d6b88',
+  },
+  bucketProbing: {
+    borderColor: '#fff',
+    background: 'rgba(255,255,255,0.13)',
+  },
+  bucketIndex: {
+    fontWeight: 700,
+    fontSize: '18px',
+    color: '#ff9d6b',
+    minWidth: '50px',
+    textAlign: 'center',
+    background: 'rgba(255, 157, 107, 0.12)',
+    borderRadius: '9px',
+    padding: '10px',
+    marginRight: '22px',
+    border: '2px solid #ff9d6b44',
+    boxShadow: '0 0 10px #ff9d6b44',
+  },
+  bucketChain: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '11px',
+    flexWrap: 'wrap',
+    flex: 1,
+  },
+  chainNode: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '7px',
+  },
+  emptyNode: {
+    color: '#fff7f2',
+    fontStyle: 'italic',
+    fontSize: '15px',
+  },
+  nodeValue: {
+    background: 'rgba(255, 157, 107, 0.16)',
+    color: '#ff9d6b',
+    padding: '11px 19px',
+    borderRadius: '11px',
+    fontWeight: 700,
+    fontSize: '16px',
+    boxShadow: '0 0 10px #ff9d6b44',
+    border: '2px solid #ff9d6b33',
+    opacity: 1,
+    transform: 'translateX(0) scale(1)',
+  },
+  nodeArrow: {
+    color: '#ff1493',
+    fontSize: '23px',
+    fontWeight: 'bold',
+    textShadow: '0 0 6px #ff5fad5',
+  },
+  openTable: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))',
+    gap: '19px',
+  },
+  slot: {
+    background: '#f9c2ff',
+    border: '3px solid #ff9d6b55',
+    borderRadius: '12px',
+    padding: '24px',
+    textAlign: 'center',
+    transition: 'all 0.2s',
+    position: 'relative',
+    minHeight: '120px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  slotOccupied: {
+    borderColor: '#ff9d6b',
+    background: 'rgba(255, 157, 107, 0.24)',
+    boxShadow: '0 0 18px #ff9d6b55',
+  },
+  slotAnimating: {
+    borderColor: '#fff',
+    background: 'rgba(255,255,255,0.07)',
+    boxShadow: '0 0 16px #fff7f2',
+  },
+  slotProbing: {
+    borderColor: '#fff7f2',
+    background: 'rgba(255,245,199,0.11)',
+  },
+  slotIndex: {
+    fontWeight: 700,
+    fontSize: '16px',
+    color: '#ff9d6b',
+    background: 'rgba(255, 157, 107, 0.16)',
+    borderRadius: '7px',
+    padding: '6px 14px',
+    marginBottom: '14px',
+    border: '2px solid #ff9d6b28',
+  },
+  slotValue: {
+    fontSize: '24px',
+    fontWeight: 700,
+    color: '#ff1493',
+    textShadow: '0 0 4px #f9c2ff55',
+  },
+  slotValueEmpty: {
+    color: '#f9c2ff33',
+    fontSize: '30px',
+  },
+  probeIndicator: {
+    position: 'absolute',
+    top: '-12px',
+    right: '-12px',
+    background: '#ff9d6b',
+    color: '#fff',
+    width: '30px',
+    height: '30px',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '14px',
+    fontWeight: 700,
+    boxShadow: '0 0 12px #ff9d6b90',
+    border: '2px solid #f9c2ff',
+    opacity: 0,
+    scale: 0,
+  },
+  probeSequence: {
+    background: 'rgba(255, 157, 107, 0.13)',
+    color: '#ff9d6b',
+    border: '2px solid #f9c2ff',
+    boxShadow: '0 0 24px #ff9d6b33, 0 0 10px #f9c2ff22',
+    padding: '17px 22px',
+    borderRadius: '12px',
+    marginTop: '22px',
+    textAlign: 'center',
+    fontSize: '18px',
+    opacity: 0,
+    transform: 'translateY(10px)',
+  },
 };
 
 
@@ -479,7 +646,7 @@ const App = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}> HASHING VISUALIZER </h1>
+      <h1 style={styles.title}>⚡ HASHING VISUALIZER ⚡</h1>
       <div style={styles.controls}>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Table Size:</label>
@@ -584,7 +751,7 @@ const App = () => {
                   <div style={styles.slotIndex}>{index}</div>
                   {slot.status === 'occupied' ? (
                     <div style={styles.slotValue} data-slot-value={index}>{slot.value}</div>
-                  ) : (        
+                  ) : (
                     <div style={{ ...styles.slotValue, ...styles.slotValueEmpty }} data-slot-value={index}>—</div>
                   )}
                   {probeSequence.includes(index) && (
