@@ -646,7 +646,7 @@ const App = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>⚡ HASHING VISUALIZER ⚡</h1>
+      <h1 style={styles.title}> 💖 HASHING VISUALIZER 💖</h1>
       <div style={styles.controls}>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Table Size:</label>
