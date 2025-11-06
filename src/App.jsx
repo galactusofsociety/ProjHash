@@ -15,7 +15,7 @@ const styles = {
   },
   controls: {
     background: 'rgba(18, 18, 18, 0.95)', padding: '28px', borderRadius: '18px',
-    boxShadow: '0 12px 36px rgba(0,0,0,0.7), 0 0 24px #fde04722', marginBottom: '28px',
+    boxShadow: '0 12px 36px rgba(219, 218, 218, 0.7), 0 0 24px #fde04722', marginBottom: '28px',
     border: '1.5px solid #fde047', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '18px'
   },
   controlGroup: {
@@ -479,7 +479,7 @@ const App = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>⚡ HASHING VISUALIZER ⚡</h1>
+      <h1 style={styles.title}> HASHING VISUALIZER </h1>
       <div style={styles.controls}>
         <div style={styles.controlGroup}>
           <label style={styles.label}>Table Size:</label>
