@@ -584,7 +584,7 @@ const App = () => {
                   <div style={styles.slotIndex}>{index}</div>
                   {slot.status === 'occupied' ? (
                     <div style={styles.slotValue} data-slot-value={index}>{slot.value}</div>
-                  ) : (        
+                  ) : (
                     <div style={{ ...styles.slotValue, ...styles.slotValueEmpty }} data-slot-value={index}>—</div>
                   )}
                   {probeSequence.includes(index) && (
